@@ -38,10 +38,15 @@ jobs:
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v2.2.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
       env:
-        JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64  # Set JAVA_HOME
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=maven-java-sample -Dsonar.projectName='maven-java-sample'
+        run: |
+          # Set JAVA_HOME and update the PATH for this step
+           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+           export PATH="$JAVA_HOME/bin:$PATH"
+    
+           # Run SonarQube scan with Maven
+          ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=maven-java-sample -Dsonar.projectName='maven-java-sample'
     - name: Publish Artifacts    
       uses: actions/upload-artifact@v4
       with:
