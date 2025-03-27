@@ -36,10 +36,15 @@ jobs:
       run: mkdir staging && cp target/*.jar staging
     - name: Debug SonarQube URL
       run: echo "${{ secrets.SONAR_HOST_URL }}"
+
+    - name: Build and test with Maven Wrapper
+      run: ./mvnw clean verify
+ 
     - name: SonarQube Scan
-      run: ./mvnw sonar:sonar -Dsonar.projectKey=maven-java-sample \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=maven-java-sample -Dsonar.projectName='maven-java-sample'
 
     - name: Publish Artifacts    
       uses: actions/upload-artifact@v4
