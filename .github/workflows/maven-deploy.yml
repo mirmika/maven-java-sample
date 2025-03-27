@@ -29,6 +29,7 @@ jobs:
         cache: maven
     - name: Build with Maven  # try to run this exact same code
       run: |
+        chmod +x mvnw
         ./mvnw -B package --file pom.xml
 
     - name: Copy artifact to staging directory
