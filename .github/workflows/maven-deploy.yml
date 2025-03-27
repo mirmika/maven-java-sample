@@ -29,7 +29,6 @@ jobs:
         cache: maven
     - name: Build with Maven  # try to run this exact same code
       run: |
-        chmod +x mvnw
         ./mvnw -B package --file pom.xml
 
     - name: Copy artifact to staging directory
@@ -40,13 +39,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        run: |
-          # Set JAVA_HOME and update the PATH for this step
-           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-           export PATH="$JAVA_HOME/bin:$PATH"
-    
-           # Run SonarQube scan with Maven
-          ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=maven-java-sample -Dsonar.projectName='maven-java-sample'
+        run:   ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=maven-java-sample -Dsonar.projectName='maven-java-sample'
     - name: Publish Artifacts    
       uses: actions/upload-artifact@v4
       with:
