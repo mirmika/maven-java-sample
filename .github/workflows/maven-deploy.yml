@@ -37,16 +37,15 @@ jobs:
     - name: Debug SonarQube URL
       run: echo "${{ secrets.SONAR_HOST_URL }}"
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v2.2.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        run:   ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=maven-java-sample -Dsonar.projectName='maven-java-sample'
+      run: ./mvnw sonar:sonar -Dsonar.projectKey=maven-java-sample \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
     - name: Publish Artifacts    
       uses: actions/upload-artifact@v4
       with:
-        name: Package
-        path: staging
+        name: spring-petclinic-2.3.1.BUILD-SNAPSHOT
+        path: target/spring-petclinic-2.3.1.BUILD-SNAPSHOT*.jar
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
